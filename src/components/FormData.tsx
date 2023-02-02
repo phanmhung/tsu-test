@@ -2,15 +2,22 @@ import React from "react";
 import { User } from "../redux/api/types";
 import { useCreateUserMutation } from "../redux/api/userApi";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { initialValues } from "../utils/initialuserValue";
 import { Button, Modal } from "react-bootstrap";
 import { AddUserSchema } from "../utils/userSchema";
 
+const initialValues = {
+    avatar: 'https://random.dog/3fd9df57-037e-41c1-935e-ed1efa45dd76.jpg',
+    firstName: '',
+    lastName: '',
+    patronymic: '',
+    email: '',
+    about: '',
+  };
 export const AddUserForm: React.FC<{userData:User[] | undefined}> = ({userData}) => {
     const [image, setImage] = React.useState(initialValues.avatar);
     const [images, setImages] = React.useState<string[]>([]);
     const [showModal, setShowModal] = React.useState<boolean>(false);
-    const [create, isLoading] = useCreateUserMutation();
+    const [create] = useCreateUserMutation();
     
     React.useEffect(() => {
       //Fetch 5 random images
@@ -181,8 +188,8 @@ export const AddUserForm: React.FC<{userData:User[] | undefined}> = ({userData})
                 </div>
                 <button
                   type="submit"
-                  className={isLoading ? 'disabled-btn' : ''}
-                  disabled={isLoading? true : false}
+                  className={isSubmitting ? 'disabled-btn' : ''}
+                  disabled={isSubmitting}
                 >
                   Save
                 </button>
