@@ -32,6 +32,11 @@ export const userApi = createApi({
     }),
     getUser: builder.query<User, string>({
       query: (id) => `/user/${id}`,
+    }),
+    getAllMail: builder.query<string[], void>({
+      query: () => '/user',
+      // loop through all users and return their emails
+      transformResponse: (users: User[]) => users.map((user) => user.email),
     })
   }),
 });
@@ -42,4 +47,5 @@ export const {
   useUpdateUserMutation,
   useDeleteUserMutation,
   useGetUserQuery,
+  useGetAllMailQuery,
 } = userApi;
