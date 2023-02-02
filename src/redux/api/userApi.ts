@@ -9,12 +9,22 @@ export const userApi = createApi({
   endpoints: (builder) => ({
     getAll: builder.query<User[], void>({
       query: () => '/user',
+      // sort response users by createDate
+      transformResponse: (users: User[]) =>
+        users.sort(
+          (a, b) =>
+            new Date(a.createDate).getTime() - new Date(b.createDate).getTime()
+        ),
     }),
     createUser: builder.mutation({
       query: (user: User) => ({
         url: '/user',
         method: 'POST',
-        body: user,
+        body: {
+          ...user,
+          createDate: new Date().toISOString(),
+        },
+        // add createDate to body user
       }),
     }),
     updateUser: builder.mutation({
@@ -37,7 +47,7 @@ export const userApi = createApi({
       query: () => '/user',
       // loop through all users and return their emails
       transformResponse: (users: User[]) => users.map((user) => user.email),
-    })
+    }),
   }),
 });
 
