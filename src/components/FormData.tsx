@@ -1,8 +1,7 @@
-import React from 'react';
-import { User } from '../redux/api/types';
-import { useCreateUserMutation } from '../redux/api/userApi';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
+import React from 'react';
 import { Button, Modal } from 'react-bootstrap';
+import { useGetAllMailQuery } from '../redux/api/userApi';
 import { AddUserSchema } from '../utils/userSchema';
 
 const initialValues = {
@@ -12,6 +11,19 @@ const initialValues = {
   patronymic: '',
   email: '',
   about: '',
+};
+
+const useEmailUniquenessValidation = () => {
+  //get all mails
+  const [allMails, setAllMails] = React.useState<string[]>([]);
+  const {data: existingMails,isLoading:loadingMail} = useGetAllMailQuery();
+  React.useEffect(() => {
+    if (existingMails && !loadingMail) {
+      setAllMails(existingMails);
+    }
+  }, [existingMails,loadingMail]);
+  
+  return AddUserSchema.test('email-unique', 'Email already exists', (value:any) =>allMails.indexOf(value.email) === -1);
 };
 export const AddUserForm: React.FC<{
   handleSubmit: (arg: any) => Promise<void>;
@@ -23,7 +35,7 @@ export const AddUserForm: React.FC<{
   React.useEffect(() => {
     //Fetch 5 random images
     const promises = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 8; i++) {
       promises.push(
         fetch('https://random.dog/woof.json')
           .then((response) => response.json())
@@ -38,12 +50,12 @@ export const AddUserForm: React.FC<{
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={AddUserSchema}
+      validationSchema={useEmailUniquenessValidation()}
       onSubmit={(values) => handleSubmit(values)}
       //pass userData to validationSchema
       validateOnMount={false}
       validateOnChange={false}
-      validateOnBlur={false}
+      validateOnBlur={true}
     >
       {({ errors, touched, setFieldValue, isSubmitting }) => {
         return (
