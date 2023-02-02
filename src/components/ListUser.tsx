@@ -1,8 +1,9 @@
 import React from 'react';
 import { Button, Container, Table } from 'react-bootstrap';
+import { User } from '../redux/api/types';
 import { useDeleteUserMutation, useGetAllQuery } from '../redux/api/userApi';
 import ModalCreate from './ModalCreate';
-import { User } from '../redux/api/types';
+import { Link } from 'react-router-dom';
 
 function ListUser() {
     const {data, isLoading} = useGetAllQuery();
@@ -38,8 +39,10 @@ function ListUser() {
           {data?.map((u:User, index)=>(
           <tr key={index}>
             <td>
+              <Link to={`/${u.id}`}>
                 <img src={u.avatar} alt={u.firstName} width='100px'/>
                 <Button variant='primary' onClick={()=>handleDelete(u.id)}>Remove User</Button>
+              </Link>
             </td>
             <td>{u.firstName}</td>
             <td>{u.lastName}</td>

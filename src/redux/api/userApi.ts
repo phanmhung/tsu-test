@@ -30,6 +30,9 @@ export const userApi = createApi({
         method: 'DELETE',
       }),
     }),
+    getUser: builder.query<User, string>({
+      query: (id) => `/user/${id}`,
+    })
   }),
 });
 
@@ -38,4 +41,5 @@ export const {
   useCreateUserMutation,
   useUpdateUserMutation,
   useDeleteUserMutation,
+  useGetUserQuery,
 } = userApi;
