@@ -106,6 +106,7 @@ export const AddUserForm: React.FC<{
                             setImage(img);
                             setFieldValue('avatar', img);
                           }}
+                          className={ image === img ? 'rounded-circle' : ''}
                         />
                       ))}
                   </Modal.Body>
