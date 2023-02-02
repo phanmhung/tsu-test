@@ -1,14 +1,14 @@
 import React from 'react';
 import { Button, Container, Table } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import { User } from '../redux/api/types';
 import { useDeleteUserMutation, useGetAllQuery } from '../redux/api/userApi';
 import ModalCreate from './ModalCreate';
-import { Link } from 'react-router-dom';
 
 function ListUser() {
     const {data, isLoading} = useGetAllQuery();
     const [show, setShow] = React.useState(false);
-    const [deleteUser,error] = useDeleteUserMutation();
+    const [deleteUser] = useDeleteUserMutation();
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
