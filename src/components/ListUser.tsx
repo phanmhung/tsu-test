@@ -1,57 +1,78 @@
 import React from 'react';
-import { Button, Container, Table } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { User } from '../redux/api/types';
+import { Button, Container } from 'react-bootstrap';
 import { useDeleteUserMutation, useGetAllQuery } from '../redux/api/userApi';
 import ModalCreate from './ModalCreate';
+import { Link } from 'react-router-dom';
+import './ListUser.css';
 
 function ListUser() {
-    const {data, isLoading} = useGetAllQuery();
-    const [show, setShow] = React.useState(false);
-    const [deleteUser] = useDeleteUserMutation();
+  const { data, isLoading } = useGetAllQuery();
+  const [show, setShow] = React.useState(false);
+  const [deleteUser] = useDeleteUserMutation();
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  function handleDelete(id:string){
+  function handleDelete(id: string) {
     // remove user with id
     deleteUser(id);
     window.location.reload();
-    
   }
-  if (isLoading) return (<div>Loading...</div>);
+  if (isLoading) return <div>Loading...</div>;
+  if (data === undefined) return <div>Something is wrong</div>;
   return (
-    <Container className='mt-5'>
-      <h1>Список пользователей</h1>
-      <Button variant='primary' onClick={handleShow}>+</Button>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Аватар</th>
-            <th>Фамилия</th>
-            <th>Имя</th>
-            <th>Отчество</th>
-            <th>Почта</th>
+    <Container className="mt-5">
+      <section>
+        <div className="row d-flex justify-content-center">
+          <div className="col-md-10 col-xl-8 text-center">
+            <h3 className="mb-4">Список пользователей</h3>
+            <Button
+              variant="primary"
+              className="mb-4 mb-md-5"
+              onClick={handleShow}
+            >
+              Создать пользователя
+            </Button>
+          </div>
+        </div>
+
+        <div className="row text-center">
+          {data.map((u,index)=>(
+          <div className="col-md-4 mb-5 mb-md-0" key={index}>
             
-          </tr>
-        </thead>
-        <tbody>
-          {data?.map((u:User, index)=>(
-          <tr key={index}>
-            <td>
+            <div className="card testimonial-card mb-5">
+              <div
+                className="card-up"
+                style={{ backgroundColor: '#9d789b' }}
+              ></div>
+              <div className="avatar mx-auto bg-white">
               <Link to={`/${u.id}`}>
-                <img src={u.avatar} alt={u.firstName} width='100px'/>
+                <img
+                height={100}
+                width={100}
+                  src={u.avatar}
+                  alt="avatar"
+                  className="rounded-circle"
+                />
+                </Link>
+              </div>
+              <div className="card-body">
+                <h4 className="mb-4">{u.firstName} {u.lastName}</h4>
+                <hr />
+                <span>{u.email}</span>
+                <p className="dark-grey-text mt-4">
+                  <i className="fas fa-quote-left pe-2"></i>
+                  {u.about !== "" ? u.about : "Nothing about him"}
+                </p>
                 <Button variant='primary' onClick={()=>handleDelete(u.id)}>Remove User</Button>
-              </Link>
-            </td>
-            <td>{u.firstName}</td>
-            <td>{u.lastName}</td>
-            <td>{u.patronymic}</td>
-            <td>{u.email}</td>
-          </tr>))}
-        </tbody>
-      </Table>
-      <ModalCreate show={show} onHide={handleClose} listUser={data}/>
+              </div>
+            </div>
+
+          </div>))}
+          
+        </div>
+      </section>
+      <ModalCreate show={show} onHide={handleClose} listUser={data} />
     </Container>
   );
 }
