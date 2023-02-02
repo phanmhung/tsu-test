@@ -1,0 +1,24 @@
+{
+  "user": [
+    {
+      "id": "1",
+      "createDate": "000000",
+      "avatar": "https://random.dog/a039205e-0e3b-415f-84bd-8c98bdae3ed4.jpg",
+      "firstName": "First",
+      "lastName": "Last",
+      "patronymic": "Middle",
+      "email": "mail@mail.com",
+      "about": "about"
+    },
+    {
+      "id": "2",
+      "createDate": "000000",
+      "avatar": "https://random.dog/214f3314-9e45-409e-8443-40bce665d7ba.JPG",
+      "firstName": "First",
+      "lastName": "Last",
+      "patronymic": "Middle",
+      "email": "mail",
+      "about": "about"
+    }
+  ]
+}
