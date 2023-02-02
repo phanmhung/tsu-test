@@ -3,6 +3,7 @@ import React from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { useGetAllMailQuery } from '../redux/api/userApi';
 import { AddUserSchema } from '../utils/userSchema';
+import { User } from '../redux/api/types';
 
 const initialValues = {
   avatar: 'https://random.dog/3fd9df57-037e-41c1-935e-ed1efa45dd76.jpg',
@@ -27,8 +28,10 @@ const useEmailUniquenessValidation = () => {
 };
 export const AddUserForm: React.FC<{
   handleSubmit: (arg: any) => Promise<void>;
-}> = ({ handleSubmit }) => {
-  const [image, setImage] = React.useState(initialValues.avatar);
+  inputInitialValues?: User;
+}> = ({ handleSubmit,inputInitialValues }) => {
+
+  const [image, setImage] = React.useState(inputInitialValues ? inputInitialValues.avatar : initialValues.avatar);
   const [images, setImages] = React.useState<string[]>([]);
   const [showModal, setShowModal] = React.useState<boolean>(false);
 
@@ -49,7 +52,7 @@ export const AddUserForm: React.FC<{
 
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={inputInitialValues ? inputInitialValues:initialValues}
       validationSchema={useEmailUniquenessValidation()}
       onSubmit={(values) => handleSubmit(values)}
       //pass userData to validationSchema
@@ -60,7 +63,7 @@ export const AddUserForm: React.FC<{
       {({ errors, touched, setFieldValue, isSubmitting }) => {
         return (
           <div className="container">
-            <h1>Add fields to continue</h1>
+            <h5>Add fields to continue</h5>
             <Form>
               <div className="form-group">
                 <label>Аватар</label>

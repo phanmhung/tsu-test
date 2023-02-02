@@ -1,10 +1,41 @@
 import React from 'react';
-import { useGetUserQuery } from '../redux/api/userApi';
+import { Button, Modal } from 'react-bootstrap';
+import { useDeleteUserMutation, useGetUserQuery, useUpdateUserMutation } from '../redux/api/userApi';
+import { AddUserForm } from './FormData';
 
 const Profile: React.FC<{ id: string }> = ({ id }) => {
+  const [show, setShow] = React.useState(false);
+  const onHide = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const [update] = useUpdateUserMutation();
+  const handleSubmit = async (value: any) => {
+    try{ 
+        //save user
+        await update(value);
+        window.location.reload();
+    }
+    catch(error){
+        console.log(error);
+    }
+  }
+
+  //delete user
+  const [deleteUser]= useDeleteUserMutation();
+  
   const { data, isLoading } = useGetUserQuery(id);
   if (isLoading) return <div>Loading...</div>;
   if (data === undefined) return <div>Something is wrong</div>;
+  const handleDelete = async () => {
+    try{
+        await deleteUser(data.id);
+        // go back to home page
+        window.location.href = "/";
+    }
+    catch(error){
+        console.log(error);
+    }
+  }
   return (
     <section style={{ backgroundColor: '#9de2ff' }}>
       <div className="container py-5 h-100">
@@ -41,12 +72,14 @@ const Profile: React.FC<{ id: string }> = ({ id }) => {
                       <button
                         type="button"
                         className="btn btn-outline-primary me-1 flex-grow-1"
+                        onClick={handleShow}
                       >
                         Редактировать
                       </button>
                       <button
                         type="button"
                         className="btn btn-primary flex-grow-1"
+                        onClick={handleDelete}
                       >
                         Удалить
                       </button>
@@ -58,6 +91,21 @@ const Profile: React.FC<{ id: string }> = ({ id }) => {
           </div>
         </div>
       </div>
+      <Modal show={show} onHide={onHide}>
+      <Modal.Header closeButton>
+        <Modal.Title>Редактировать</Modal.Title>
+      </Modal.Header>
+
+      <Modal.Body>
+        <AddUserForm handleSubmit={handleSubmit} inputInitialValues={data}/>
+      </Modal.Body>
+
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onHide}>
+          Close
+        </Button>
+      </Modal.Footer>
+    </Modal>
     </section>
   );
 };
