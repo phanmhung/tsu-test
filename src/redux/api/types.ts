@@ -1,5 +1,5 @@
 export interface User {
-    id: number;
+    id: string;
     // Дата создания пользователя
       createDate: string
     // Ссылка на аватар

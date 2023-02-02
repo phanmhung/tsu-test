@@ -1,14 +1,23 @@
 import React from 'react';
 import { Button, Container, Table } from 'react-bootstrap';
-import { useGetAllQuery } from '../redux/api/userApi';
+import { useDeleteUserMutation, useGetAllQuery } from '../redux/api/userApi';
 import ModalCreate from './ModalCreate';
+import { User } from '../redux/api/types';
 
 function ListUser() {
     const {data, isLoading} = useGetAllQuery();
     const [show, setShow] = React.useState(false);
+    const [deleteUser,error] = useDeleteUserMutation();
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  function handleDelete(id:string){
+    // remove user with id
+    deleteUser(id);
+    window.location.reload();
+    
+  }
   if (isLoading) return (<div>Loading...</div>);
   return (
     <Container className='mt-5'>
@@ -26,10 +35,11 @@ function ListUser() {
           </tr>
         </thead>
         <tbody>
-          {data?.map((u, index)=>(
+          {data?.map((u:User, index)=>(
           <tr key={index}>
             <td>
                 <img src={u.avatar} alt={u.firstName} width='100px'/>
+                <Button variant='primary' onClick={()=>handleDelete(u.id)}>Remove User</Button>
             </td>
             <td>{u.firstName}</td>
             <td>{u.lastName}</td>

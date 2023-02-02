@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import * as Yup from 'yup';
 import { User } from '../redux/api/types';
+import { useCreateUserMutation } from '../redux/api/userApi';
 
 const initialValues = {
     avatar: 'https://random.dog/3fd9df57-037e-41c1-935e-ed1efa45dd76.jpg',
@@ -35,7 +36,8 @@ const AddUserForm: React.FC<{userData:User[] | undefined}> = ({userData}) => {
   const [image, setImage] = React.useState(initialValues.avatar);
   const [images, setImages] = React.useState<string[]>([]);
   const [showModal, setShowModal] = React.useState<boolean>(false);
-
+  const [create, isLoading] = useCreateUserMutation();
+  
   useEffect(() => {
     //Fetch 5 random images
     const promises = [];
@@ -59,7 +61,8 @@ const AddUserForm: React.FC<{userData:User[] | undefined}> = ({userData}) => {
             throw new Error('Email already exists');
         }
         //save user
-        console.log(value);
+        await create(value);
+        window.location.reload();
     }
     catch(error){
         console.log(error);
